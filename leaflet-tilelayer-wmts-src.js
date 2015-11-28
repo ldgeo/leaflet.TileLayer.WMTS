@@ -34,7 +34,7 @@ L.TileLayer.WMTS = L.TileLayer.extend({
         L.TileLayer.prototype.onAdd.call(this, map);
     },
 
-    getTileUrl: function (tilePoint, zoom) { // (Point, Number) -> String
+    getTileUrl: function (tilePoint) { // (Point) -> String
         var map = this._map;
         crs = map.options.crs;
         tileSize = this.options.tileSize;
@@ -42,11 +42,11 @@ L.TileLayer.WMTS = L.TileLayer.extend({
         //+/-1 in order to be on the tile
         nwPoint.x+=1;
         nwPoint.y-=1;
+        zoom=this._getZoomForUrl();
         sePoint = nwPoint.add(new L.Point(tileSize, tileSize));
         nw = crs.project(map.unproject(nwPoint, zoom));
         se = crs.project(map.unproject(sePoint, zoom));
         tilewidth = se.x-nw.x;
-        zoom=map.getZoom();
         ident = this.matrixIds[zoom].identifier;
         X0 = this.matrixIds[zoom].topLeftCorner.lng;
         Y0 = this.matrixIds[zoom].topLeftCorner.lat;
@@ -63,10 +63,10 @@ L.TileLayer.WMTS = L.TileLayer.extend({
         }
         return this;
     },
-    
+
     getDefaultMatrix : function () {
         /**
-         * the matrix3857 represents the projection 
+         * the matrix3857 represents the projection
          * for in the IGN WMTS for the google coordinates.
          */
         var matrixIds3857 = new Array(22);
